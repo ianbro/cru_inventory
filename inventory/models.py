@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Item(models.Model):
@@ -12,7 +13,26 @@ class Item(models.Model):
     total_amount = models.PositiveIntegerField(default=1)
     amount_left = models.PositiveIntegerField(default=1)
     
+    def checkout(self, user, amount):
+        return ItemRecord.objects.create(person=user, item=self, amount=amount)
+    
+    @staticmethod
+    def items_in():
+        return Item.objects.filter(amount_left__gte=0)
+    
+    @staticmethod
+    def items_out():
+        return ItemRecord.objects.filter(date_checked_in__isnull=True)
+    
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.amount_left = self.total_amount
+        super(Item, self).save(*args, **kwargs)
+    
     def __str__(self):
+        return self.name
+        
+    def __repr__(self):
         return self.name
         
 class ItemRecord(models.Model):
@@ -21,12 +41,30 @@ class ItemRecord(models.Model):
     person = models.ForeignKey(User)
     item = models.ForeignKey(Item)
     date_checked_out = models.DateTimeField(auto_now_add=True)
-    date_checked_in = models.DateTimeField(auto_now=True, null=True, blank=True)
+    date_checked_in = models.DateTimeField(null=True, blank=True)
     amount = models.PositiveIntegerField(default=1)
+    
+    @staticmethod
+    def users_items_out(user):
+        return Item.items_out().filter(person=user)
+    
+    def is_checkedin(self):
+        if self.date_checked_in is None:
+            return False
+        else:
+            return True
+    
+    def checkin(self):
+        self.date_checked_in = timezone.now()
+        self.item.amount_left += self.amount
+        self.save()
+        self.item.save()
     
     def save(self, *args, **kwargs):
         if self.amount > self.item.amount_left:
-            raise ValueError("There are not enough %ss left to take %d of them out. There are only %d left." % (self.item, self.amount, self.item.amount_left))
+            print self.amount.__class__.__name__
+            print self.item.amount_left.__class__.__name__
+            raise ValueError("There are not enough %ss left to take %s of them out. There are only %d left." % (self.item, self.amount, self.item.amount_left))
         else:
             record = super(ItemRecord, self).save(*args, **kwargs)
             self.item.amount_left = self.item.amount_left - self.amount
@@ -34,4 +72,7 @@ class ItemRecord(models.Model):
             return record
             
     def __str__(self):
+        return "%s %s: %d %s" % (self.person.first_name, self.person.last_name, self.amount, self.item.name)
+    
+    def __repr__(self):
         return "%s %s: %d %s" % (self.person.first_name, self.person.last_name, self.amount, self.item.name)
