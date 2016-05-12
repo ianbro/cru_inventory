@@ -57,7 +57,6 @@ class ItemRecord(models.Model):
     def checkin(self):
         self.date_checked_in = timezone.now()
         item = Item.objects.get(id=self.item.id)
-        print item.amount_left
         item.amount_left = item.amount_left + self.amount
         self.save()
         item.save()
