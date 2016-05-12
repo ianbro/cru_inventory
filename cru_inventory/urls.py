@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 from django.core.urlresolvers import reverse_lazy
 
 urlpatterns = [
-    url(r'^helm/', admin.site.urls),
+    url(r'^helm/', admin.site.urls, name="helm"),
     url(r'^$', RedirectView.as_view(url=reverse_lazy("inv:items"), permanent=False)),
     url(r'^login/', auth_views.login, {'template_name': 'admin/login.html'}, name="login"),
     url(r'^logout/', auth_views.logout, {'next_page': reverse_lazy('login')}, name="logout"),

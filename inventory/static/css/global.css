@@ -1,0 +1,74 @@
+*{
+  box-sizing: border-box;
+}
+
+html{
+  height: 100%;
+}
+
+body{
+  margin: 0;
+  height: 100%;
+}
+
+input{
+  height: 25px;
+}
+
+button{
+  height: 25px;
+}
+
+.header__container{
+  padding: 0 40px 0 40px;
+  background-color: #6a0032;
+  border-bottom-color: #9c3365;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+}
+
+.logo--cru{
+  height: 70px;
+  width: 120px;
+  background-size: 100px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.header__container--logo{
+  vertical-align: middle;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.header__container--links{
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.header__link{
+  display: inline-block;
+  margin: 0;
+}
+
+.header__link > p{
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.header__link > p > a{
+  color: #ffc82e;
+  text-decoration: none;
+}
+
+.header__link:hover{
+  background-color: #590021;
+  cursor: pointer;
+}
+
+.body__container{
+  padding: 7% 0 0 0;
+  height: 100%;
+  background-color: #f2f2f2;
+}

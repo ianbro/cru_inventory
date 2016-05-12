@@ -4,14 +4,31 @@
         <title>{% block title %}{% endblock %} | CMU Cru Inventory</title>
         <meta name="description" content="Item inventory for CMU Cru">
         
-        {% block custom_css %}
-        {% endblock custom_css %}
+        {% load staticfiles %}
+        {% block css %}
+        <link type="text/css" rel="stylesheet" href="{% static 'css/global.css' %}"/>
+        {% endblock css %}
         
         {% block custom_javascript %}
+        <script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
+        <script type="text/javascript" src="{% static 'jquery-ui-1.9.2/js/jquery-1.8.3.js' %}"></script>
         {% endblock custom_javascript %}
     </head>
     <body>
-        {% block content %}
-        {% endblock content %}
+        <div class="header__container">
+            <div class="header__container--logo">
+                <a href="{% url 'inv:items' %}"><div class="logo--cru" style="background-image: url({% static 'images/cru_logo.png' %})"></div></a>
+            </div>
+            <div class="header__container--links">
+                <div class="header__link"><p><a href="{% url 'inv:add_item' %}">Add Item</a></p></div>
+                {% if user.is_superuser %}
+                <div class="header__link"><p><a href="/helm/">Helm</a></p></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="body__container">
+            {% block content %}
+            {% endblock content %}
+        </div>
     </body>
 </html>

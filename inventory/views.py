@@ -1,7 +1,7 @@
 import logging
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
@@ -40,31 +40,40 @@ class AddItemView(TemplateView):
             return render(request, self.template_name, context)
             
             
-def ajax_checkout_item(request, item_id, *args, **kwargs):
+def ajax_checkout_item(request, *args, **kwargs):
+    
+    if request.method == "POST":
+        json_data = {}
+        
+        user = request.user
+        amount = int(request.POST['amount'])
+        item_id = int(request.POST['item_id'])
+        
+        try:
+            item_record = Item.objects.get(id=item_id).checkout(user, amount)
+            return HttpResponseRedirect(reverse('inv:items'))
+        except ValueError:
+            return HttpResponseRedirect("%s?error=true" % reverse('inv:items'))
+    else:
+        return Http404("Please Don't Do That!")
+    
+    
+def ajax_checkin_item(request, record_id, *args, **kwargs):
     json_data = {}
     
-    user = request.user
-    amount = int(request.GET['amount'])
-    
     try:
-        item_record = Item.objects.get(id=item_id).checkout(user, amount)
+        item_record = ItemRecord.objects.get(id=record_id).checkin()
         json_data.update({
-            "person": "%s %s" % (item_record.person.first_name,
-                                    item_record.person.last_name),
-            "item": {
-                "name": item_record.item.name,
-                "description": item_record.item.description,
-                "id": item_record.item.id,
-            },
-            "date_out": item_record.date_checked_out,
-            "amount": item_record.amount,
-            "id": item_record.id,
+            "name": item_record.item.name,
+            "description": item_record.item.description,
+            "total_amount": item_record.item.total_amount,
+            "amount_left": item_record.item.amount_left,
             "success": True
         })
-    except ValueError, e:
+    except ItemRecord.DoesNotExist, e:
         json_data['success'] = False
+        logger.error("%s: %s" % (e.__class__.__name__, e))
     return JsonResponse(json_data)
-    
     
     
 class ItemListView(TemplateView):
@@ -90,6 +99,9 @@ class ItemListView(TemplateView):
             "items_in": items,
             "items_out": items_out,
         })
+        
+        if 'error' in self.request.GET.keys():
+            context['item_amount_error'] = True
         
         return context
         

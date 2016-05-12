@@ -1,0 +1,75 @@
+.content{
+  padding: 20px;
+  height: auto;
+  margin: auto;
+  background-color: #fafafa;
+  box-shadow: 0px 5px 6px -1px #b3b3b3;
+  width: 600px;
+  height: 640px
+}
+
+#list__container--items_in{
+  float: left;
+}
+
+#list__container--items_out{
+  float: right;
+}
+
+.list__half{
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  background-color: #f2f2f2;
+  width: 250px;
+  height: 600px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #050505;
+  overflow-y: scroll;
+}
+
+.list__header{
+  margin: 0;
+  background-color: #6a0032;
+  padding: 5px 5px 5px 5px;
+}
+
+.list__header > h3{
+  display: inline-block;
+  margin: 0;
+  color: #ffc82e;
+}
+
+.list__header > p{
+  margin: 0 0 0 5px;
+  display: inline-block;
+  color: #ff4d4d;
+}
+
+.list__element > h4{
+  cursor: pointer;
+}
+
+.list__element{
+  padding: 0 10px 10px 10px;
+}
+
+.list__element > div > form > p > input{
+  width: 50px;
+}
+
+.list__element > div > form> input{
+  margin-right: 10px;
+}
+
+.seperator{
+  padding: 1px 0 0 0;
+  margin-left: 5px;
+  margin-right: 5px;
+  background-color: #020202;
+}
+
+.list__element > p{
+  margin-left: 5px;
+}

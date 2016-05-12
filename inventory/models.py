@@ -56,14 +56,20 @@ class ItemRecord(models.Model):
     
     def checkin(self):
         self.date_checked_in = timezone.now()
-        self.item.amount_left += self.amount
+        item = Item.objects.get(id=self.item.id)
+        print item.amount_left
+        item.amount_left = item.amount_left + self.amount
         self.save()
-        self.item.save()
+        item.save()
+        return self
     
     def save(self, *args, **kwargs):
-        if self.amount > self.item.amount_left:
-            print self.amount.__class__.__name__
-            print self.item.amount_left.__class__.__name__
+        if not self.date_checked_in is None:
+            record = super(ItemRecord, self).save(*args, **kwargs)
+            return record
+            
+        item = Item.objects.get(id=self.item.id)
+        if self.amount > item.amount_left:
             raise ValueError("There are not enough %ss left to take %s of them out. There are only %d left." % (self.item, self.amount, self.item.amount_left))
         else:
             record = super(ItemRecord, self).save(*args, **kwargs)
