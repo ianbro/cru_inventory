@@ -54,7 +54,7 @@ coverage.xml
 logfile
 static/*
 */settings.py
-db.sqlite3
+*.sqlite3
 
 # Sphinx documentation
 docs/_build/
