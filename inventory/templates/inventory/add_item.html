@@ -2,12 +2,28 @@
 
 {% block title %}Add Item{% endblock title %}
 
+{% load staticfiles %}
+{% block css %}
+{{ block.super }}
+<link type="text/css" rel="stylesheet" href="{% static 'css/add_item.css' %}" />
+{% endblock %}
+
 {% block content %}
-<div class="form__container">
+<div class="content">
     <form id="item_add__form" action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create Item</button>
+        <div class="form__field">
+            <input id="id_name" maxlength="55" name="name" type="text" placeholder="Item Name:"></input>
+            <div></div>
+            <input id="id_total_amount" min="1" name="total_amount", type="number" placeholder="Amount:"></input>
+        </div>
+        <div class="form__field">
+            <textarea cols="40" id="id_description" name="description" rows="10" placeholder="Description:"></textarea>
+        </div>
+        <div class="form__field">
+            <button class="form__submit" type="submit">Create Item</button>
+            <button class="form__submit"><a href="{% url 'inv:items' %}">Cancel</a></button>
+        </div>
     </form>
 </div>
 {% endblock content %}

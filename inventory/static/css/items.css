@@ -26,6 +26,10 @@
   border-width: 1px;
   border-style: solid;
   border-color: #050505;
+}
+
+.list__content{
+  height: 566px;
   overflow-y: scroll;
 }
 
@@ -57,6 +61,10 @@
 
 .list__element > div > form > p > input{
   width: 50px;
+}
+
+.list__element form > p{
+  word-wrap: break-word;
 }
 
 .list__element > div > form> input{

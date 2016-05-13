@@ -8,7 +8,7 @@ from django.utils import timezone
 class Item(models.Model):
     
     name = models.CharField(max_length=55)
-    description = models.CharField(max_length=100)
+    description = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
     total_amount = models.PositiveIntegerField(default=1)
     amount_left = models.PositiveIntegerField(default=1)
