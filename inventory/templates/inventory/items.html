@@ -32,7 +32,7 @@
                         {% csrf_token %}
                         <p class="item__desc">{{ item.description }}</p>
                         <p class="item__amount">{{ item.amount_left }} of {{ item.total_amount }} left. Take out:
-                            <input type="number" name="amount" id="{{ item.id }}--amount"></input>
+                            <input type="number" name="amount" id="{{ item.id }}--amount" value="1" min="1" max="{{ item.amount_left }}"></input>
                         </p>
                         <button name="item_id" type="submit" class="submit_checkout" value="{{ item.id }}">Checkout</button>
                     </form>
@@ -56,7 +56,10 @@
                   <p class="record__person">Checked out by: {{ record.person }}</p>
                   <p class="record__amount">Amount Out: {{ record.amount }}</p>
               </div>
-              <div><button class="submit_checkin" value="{{ record.id }}">Checkin</button></div>
+              <div>
+                  <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
+                  <button class="useup_item" value="{{ record.id }}">Use Up</button>
+              </div>
           </div>
           <div class="seperator"></div>
           {% endfor %}

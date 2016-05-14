@@ -20,11 +20,12 @@ class AddItemView(TemplateView):
     
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        try:
-            return super(AddItemView, self).dispatch(request, *args, **kwargs)
-        except Exception, e:
-            logger.error("%s: %s" % (e.__class__.__name__, e))
-            raise e
+        # try:
+        #     return super(AddItemView, self).dispatch(request, *args, **kwargs)
+        # except Exception, e:
+        #     logger.error("%s: %s" % (e.__class__.__name__, e))
+        #     raise e
+        return super(AddItemView, self).dispatch(request, *args, **kwargs)
             
     def get_context_data(self, *args, **kwargs):
         context = super(AddItemView, self).get_context_data(*args, **kwargs)
@@ -76,6 +77,24 @@ def ajax_checkin_item(request, record_id, *args, **kwargs):
     return JsonResponse(json_data)
     
     
+def ajax_useup_item(request, record_id, *args, **kwargs):
+    json_data = {}
+    
+    try:
+        item_record = ItemRecord.objects.get(id=record_id).use_up_item()
+        json_data.update({
+            "name": item_record.item.name,
+            "description": item_record.item.description,
+            "total_amount": item_record.item.total_amount,
+            "amount_left": item_record.item.amount_left,
+            "success": True
+        })
+    except ItemRecord.DoesNotExist, e:
+        json_data['success'] = False
+        logger.error("%s: %s" % (e.__class__.__name__, e))
+    return JsonResponse(json_data)
+    
+    
 class ItemListView(TemplateView):
     """docstring for ItemListView"""
     
@@ -83,17 +102,18 @@ class ItemListView(TemplateView):
     
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        try:
-            return super(ItemListView, self).dispatch(request, *args, **kwargs)
-        except Exception, e:
-            logger.error("%s: %s" % (e.__class__.__name__, e))
-            raise e
+        # try:
+        #     return super(ItemListView, self).dispatch(request, *args, **kwargs)
+        # except Exception, e:
+        #     logger.error("%s: %s" % (e.__class__.__name__, e))
+        #     raise e
+        return super(ItemListView, self).dispatch(request, *args, **kwargs)
     
     def get_context_data(self, *args, **kwargs):
         context = super(ItemListView, self).get_context_data(*args, **kwargs)
         
-        items = Item.items_in()
-        items_out = ItemRecord.users_items_out(self.request.user)
+        items = Item.objects.items_in()
+        items_out = ItemRecord.objects.users_items_out(self.request.user)
         
         context.update({
             "items_in": items,

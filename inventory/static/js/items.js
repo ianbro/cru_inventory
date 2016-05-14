@@ -9,11 +9,19 @@ $(document).ready(function(){
     $.getJSON("/inventory/checkin/" + $(this).val() + "/", function(data){
       if (data.success == true) {
         window.location.reload();
+      } else {
+        console.log(data);
       }
     });
   })
   
-  $(".submit_checkout").live("click", function() {
-    
+  $(".useup_item").live("click", function() {
+    $.getJSON("/inventory/useup/" + $(this).val() + "/", function(data){
+      if (data.success == true) {
+        window.location.reload();
+      } else {
+        console.log(data);
+      }
+    })
   });
 });

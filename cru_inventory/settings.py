@@ -1,1 +1,1 @@
-settings_production.py
+settings_development.py

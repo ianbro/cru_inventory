@@ -21,6 +21,10 @@
             <textarea cols="40" id="id_description" name="description" rows="10" placeholder="Description:"></textarea>
         </div>
         <div class="form__field">
+            <label for="id_category">Category:</label>
+            {{ form.category }}
+        </div>
+        <div class="form__field">
             <button class="form__submit" type="submit">Create Item</button>
             <button class="form__submit"><a href="{% url 'inv:items' %}">Cancel</a></button>
         </div>
