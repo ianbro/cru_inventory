@@ -26,6 +26,7 @@
   margin: 0;
   background-color: #6a0032;
   padding: 5px 5px 5px 5px;
+  cursor: pointer;
 }
 
 .list__header.sub_category{

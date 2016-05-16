@@ -1,7 +1,5 @@
 $(document).ready(function(){
   populate_root_categories();
-  
-  $(".list__element > div").hide();
   $(".list__header.sub_category").each(function(){
     $(this).css("padding-left", "" + (parseInt($(this).attr("level")) * 10) + "px");
   });
@@ -36,6 +34,8 @@ $(document).ready(function(){
       }
     });
   });
+  
+  $(".list__element > div, .list__content").hide();
 });
 
 function populate_root_categories() {
