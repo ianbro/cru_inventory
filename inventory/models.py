@@ -37,20 +37,21 @@ class Category(models.Model):
     def __repr__(self):
         return self.name
         
-    def to_json(self):
+    def to_json(self, level=0):
         json = {
             "pk": self.id,
-            "name": self.name
+            "name": self.name,
+            "level": level,
         }
         if self.category_set.all().exists():
             cats = []
             for cat in self.category_set.all():
-                cats.append(cat.to_json())
+                cats.append(cat.to_json(level + 1))
             json["categories"] = cats
         else:
             json["items"] = []
             for item in self.item_set.all():
-                json["items"].append(item.to_json())
+                json["items"].append(item.to_json(level + 1))
         return json
             
             
@@ -88,14 +89,15 @@ class Item(models.Model):
     def __repr__(self):
         return self.name
         
-    def to_json(self):
+    def to_json(self, level=0):
         json = {
             "pk": self.id,
             "name": self.name,
             "description": self.description,
             "date_added": self.date_added.strftime("%D"),
             "total_amount": self.total_amount,
-            "amount_left": self.amount_left
+            "amount_left": self.amount_left,
+            "level": level
         }
         return json
         

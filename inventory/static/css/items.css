@@ -1,22 +1,11 @@
 .content{
-  padding: 20px;
   height: auto;
   margin: auto;
   background-color: #fafafa;
   box-shadow: 0px 5px 6px -1px #b3b3b3;
-  width: 600px;
-  height: 640px
 }
 
-#list__container--items_in{
-  float: left;
-}
-
-#list__container--items_out{
-  float: right;
-}
-
-.list__half{
+.list{
   display: inline-block;
   vertical-align: top;
   padding: 0;
@@ -26,6 +15,7 @@
   border-width: 1px;
   border-style: solid;
   border-color: #050505;
+  margin: 30px;
 }
 
 .list__content{
@@ -36,6 +26,10 @@
   margin: 0;
   background-color: #6a0032;
   padding: 5px 5px 5px 5px;
+}
+
+.list__header.sub_category{
+  background-color: #8c2254;
 }
 
 .list__header > h3{
