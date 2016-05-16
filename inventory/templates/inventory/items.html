@@ -36,10 +36,10 @@
     
     {% if user.is_superuser %}
     <div class="list" id="list__container--items_out">
-      <div class="list__header">
+      <div class="list__header header_out">
           <h3>Items Out:</h3>
       </div>
-      <div class="list__content">
+      <div class="list__content content_out">
           {% for record in items_out %}
           <div class="list__element" id="item_out-{{ record.id }}">
               <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>

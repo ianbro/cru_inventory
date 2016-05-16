@@ -5,11 +5,13 @@ $(document).ready(function(){
   });
   
   $(".item__name").live("click", function(){
-    console.log($("div#item--" + $(this).attr("item-id")));
     $("div#item--" + $(this).attr("item-id")).slideToggle("fast");
   });
   $(".list__header").live("click", function(){
     $("div#category--" + $(this).attr("category-id")).slideToggle("fast");
+  });
+  $(".header_out").live("click", function(){
+    $(".content_out").slideToggle("fast");
   });
   $(".out_element__toggle").live("click", function(){
     $("#item--" + $(this).attr("item-id")).slideToggle("fast");
