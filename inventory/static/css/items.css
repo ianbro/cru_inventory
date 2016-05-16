@@ -29,7 +29,6 @@
 }
 
 .list__content{
-  height: 566px;
   overflow-y: scroll;
 }
 

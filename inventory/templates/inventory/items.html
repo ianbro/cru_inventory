@@ -10,38 +10,29 @@
 
 {% block custom_javascript %}
 {{ block.super }}
+<script type="text/javascript">
+  window.root_categories = {{ categories_json | safe }};
+  window.csrf = "{% csrf_token %}";
+</script>
 <script type="text/javascript" src="{% static 'js/items.js' %}"></script>
 {% endblock custom_javascript %}
 
 {% block content %}
 
 <div class="content">
-    <div class="list__half" id="list__container--items_in">
-        <div class="list__header">
-            <h3>Items In</h3>
-            {% if item_amount_error %}
-            <p>Sorry, not enough</p>
-            {% endif %}
-        </div>
-        <div class="list__content">
-            {% for item in items_in %}
-            <div class="list__element" id="item_in-{{ item.id }}">
-                <h4 class="item__name">{{ item.name }}</h4>
-                <div>
-                    <form method="post" action="{% url 'inv:checkout' %}">
-                        {% csrf_token %}
-                        <p class="item__desc">{{ item.description }}</p>
-                        <p class="item__amount">{{ item.amount_left }} of {{ item.total_amount }} left. Take out:
-                            <input type="number" name="amount" id="{{ item.id }}--amount" value="1" min="1" max="{{ item.amount_left }}"></input>
-                        </p>
-                        <button name="item_id" type="submit" class="submit_checkout" value="{{ item.id }}">Checkout</button>
-                    </form>
-                </div>
+    {% for root_category in categories_python %}
+        <div class="list__half" id="list__container--items_in">
+            <div class="list__header">
+                <h3>{{ root_category.name }}</h3>
+                {% if item_amount_error %}
+                <p>Sorry, not enough</p>
+                {% endif %}
             </div>
-            <div class="seperator"></div>
-            {% endfor %}
+            <div class="list__content" id="category--{{ root_category.pk }}">
+                
+            </div>
         </div>
-    </div>
+    {% endfor %}
     {% if user.is_superuser %}
     <div class="list__half" id="list__container--items_out">
       <div class="list__header">

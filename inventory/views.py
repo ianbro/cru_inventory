@@ -1,4 +1,5 @@
 import logging
+import json
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, Http404
@@ -7,7 +8,7 @@ from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from inventory.models import Item, ItemRecord
+from inventory.models import Item, ItemRecord, Category
 from inventory.forms import CreateItemForm
 
 logger = logging.getLogger(__name__)
@@ -112,12 +113,14 @@ class ItemListView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(ItemListView, self).get_context_data(*args, **kwargs)
         
-        items = Item.objects.items_in()
-        items_out = ItemRecord.objects.users_items_out(self.request.user)
+        categories = Category.objects.root_categories()
+        json_categories = []
+        for cat in categories:
+            json_categories.append(cat.to_json())
         
         context.update({
-            "items_in": items,
-            "items_out": items_out,
+            "categories_json": json.dumps(json_categories),
+            "categories_python": categories
         })
         
         if 'error' in self.request.GET.keys():

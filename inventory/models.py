@@ -13,6 +13,9 @@ class CategoryManager(models.Manager):
             if not Category.objects.filter(parent_category=c).exists():
                 ids.append(c.id)
         return Category.objects.filter(pk__in=ids)
+        
+    def root_categories(self):
+        return Category.objects.filter(parent_category=None)
 
 
 class Category(models.Model):
@@ -33,6 +36,22 @@ class Category(models.Model):
         
     def __repr__(self):
         return self.name
+        
+    def to_json(self):
+        json = {
+            "pk": self.id,
+            "name": self.name
+        }
+        if self.category_set.all().exists():
+            cats = []
+            for cat in self.category_set.all():
+                cats.append(cat.to_json())
+            json["categories"] = cats
+        else:
+            json["items"] = []
+            for item in self.item_set.all():
+                json["items"].append(item.to_json())
+        return json
             
             
 class ItemManager(models.Manager):
@@ -68,6 +87,17 @@ class Item(models.Model):
         
     def __repr__(self):
         return self.name
+        
+    def to_json(self):
+        json = {
+            "pk": self.id,
+            "name": self.name,
+            "description": self.description,
+            "date_added": self.date_added.strftime("%D"),
+            "total_amount": self.total_amount,
+            "amount_left": self.amount_left
+        }
+        return json
         
 
 class ItemRecordManager(models.Manager):
