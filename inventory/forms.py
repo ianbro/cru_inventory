@@ -4,7 +4,10 @@ from inventory.models import Item, ItemRecord, Category
 
 class CreateItemForm(forms.ModelForm):
     
-    categories = Category.objects.leaf_categories()
+    try:
+        categories = Category.objects.leaf_categories()
+    except Exception, e:
+        categories = []
     
     class Meta:
         model = Item
