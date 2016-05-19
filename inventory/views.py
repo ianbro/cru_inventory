@@ -113,7 +113,8 @@ class ItemListView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(ItemListView, self).get_context_data(*args, **kwargs)
         
-        items_out = ItemRecord.objects.users_items_out(self.request.user)
+        users_items_out = ItemRecord.objects.users_items_out(self.request.user)
+        all_items_out = Item.objects.items_out().exclude(id__in=[item.pk for item in users_items_out])
         
         categories = Category.objects.root_categories()
         json_categories = []
@@ -123,7 +124,8 @@ class ItemListView(TemplateView):
         context.update({
             "categories_json": json.dumps(json_categories),
             "categories_python": categories,
-            "items_out": items_out,
+            "users_items_out": users_items_out,
+            "all_items_out": all_items_out,
         })
         
         if 'error' in self.request.GET.keys():

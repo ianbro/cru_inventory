@@ -20,7 +20,12 @@
                 <a href="{% url 'inv:items' %}"><div class="logo--cru" style="background-image: url({% static 'images/cru_logo.png' %})"></div></a>
             </div>
             <div class="header__container--links">
+                {% if user.is_authenticated %}
+                <div class="header__link"><p><a href="{% url 'logout' %}">Logout</a></p></div>
+                {% endif %}
+                
                 <div class="header__link"><p><a href="{% url 'inv:add_item' %}">Add Item</a></p></div>
+                
                 {% if user.is_superuser %}
                 <div class="header__link"><p><a href="/helm/">Helm</a></p></div>
                 {% endif %}

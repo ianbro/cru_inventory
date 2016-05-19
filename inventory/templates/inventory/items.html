@@ -34,13 +34,12 @@
         </div>
     {% endfor %}
     
-    {% if user.is_superuser %}
     <div class="list" id="list__container--items_out">
       <div class="list__header header_out">
-          <h3>Items Out:</h3>
+          <h3>Your Items Out:</h3>
       </div>
       <div class="list__content content_out">
-          {% for record in items_out %}
+          {% for record in users_items_out %}
           <div class="list__element" id="item_out-{{ record.id }}">
               <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>
               <div class="out_element__details" id="item--out_{{ record.id }}">
@@ -52,6 +51,29 @@
                   <div>
                       <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
                       <button class="useup_item" value="{{ record.id }}">Use Up</button>
+                  </div>
+              </div>
+          </div>
+          <div class="seperator"></div>
+          {% endfor %}
+      </div>
+    </div>
+    
+    {% if user.is_superuser %}
+    <div class="list" id="list__container--items_all_out">
+      <div class="list__header header_all_out">
+          <h3>All Other Items Out:</h3>
+      </div>
+      <div class="list__content content_all_out">
+          {% for record in all_items_out %}
+          <div class="list__element" id="item_out-{{ record.id }}">
+              <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>
+              <div class="out_element__details" id="item--out_{{ record.id }}">
+                  <div>
+                      <p class="item__desc">{{ record.item.description }}</p>
+                      <p class="record__person">Checked out by: {{ record.person }}</p>
+                      <p class="record__date_out">On: {{ record.date_checked_out }}</p>
+                      <p class="record__amount">Amount Out: {{ record.amount }}</p>
                   </div>
               </div>
           </div>

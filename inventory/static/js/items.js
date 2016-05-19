@@ -13,6 +13,9 @@ $(document).ready(function(){
   $(".header_out").live("click", function(){
     $(".content_out").slideToggle("fast");
   });
+  $(".header_all_out").live("click", function(){
+    $(".content_all_out").slideToggle("fast");
+  });
   $(".out_element__toggle").live("click", function(){
     $("#item--" + $(this).attr("item-id")).slideToggle("fast");
   });
