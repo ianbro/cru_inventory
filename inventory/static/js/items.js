@@ -20,6 +20,14 @@ $(document).ready(function(){
     $("#item--" + $(this).attr("item-id")).slideToggle("fast");
   });
   
+  $(".checkout__form").submit(function(event){
+    if ($(this).find(".item__checkout_name").val() == "") {
+      event.preventDefault();
+      $(this).find(".item__checkout_name").focus();
+      
+    }
+  })
+  
   $(".submit_checkin").live("click", function() {
     $.getJSON("/inventory/checkin/" + $(this).val() + "/", function(data){
       if (data.success == true) {
@@ -40,7 +48,7 @@ $(document).ready(function(){
     });
   });
   
-  $(".list__element > div, .list__content").hide();
+  // $(".list__element > div, .list__content").hide();
 });
 
 function populate_root_categories() {
@@ -92,12 +100,13 @@ function populate_item(item){
     <div class=\"list__element\" id=\"item_in-" + item.pk + "\"> \n\
       <h4 class=\"item__name\" item-id=\"" + item.pk + "\">" + item.name + "</h4> \n\
       <div id=\"item--" + item.pk + "\"> \n\
-        <form method=\"post\" action=\"/inventory/checkout/\"> \n\
+        <form class='checkout__form' method=\"post\" action=\"/inventory/checkout/\"> \n\
           " + window.csrf + " \n\
           <p class=\"item__desc\">" + item.description + "</p> \n\
           <p class=\"item__amount\">" + item.amount_left + " of " + item.total_amount + " left. Take out: \n\
             <input type=\"number\" name=\"amount\" id=\"" + item.id + "--amount\" value=\"1\" min=\"1\" max=\"" + item.amount_left + "\"></input> \n\
           </p> \n\
+          <input class='item__checkout_name' type='text' id='id_person--" + item.id + "' name='person' placeholder='Firstname Lastname'></input>\
           <button name=\"item_id\" type=\"submit\" class=\"submit_checkout\" value=\"" + item.pk + "\">Checkout</button> \n\
         </form> \n\
       </div> \n\

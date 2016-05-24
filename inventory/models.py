@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Create your models here.
@@ -53,6 +52,22 @@ class Category(models.Model):
             for item in self.item_set.all():
                 json["items"].append(item.to_json(level + 1))
         return json
+        
+    def save(self, *args, **kwargs):
+        if not self.id and not self.parent_category is None:
+            if self.name == "%s: Other" % self.parent_category.name:
+                super(Category, self).save(*args, **kwargs)
+                for item in self.parent_category.item_set.all():
+                    item.category = self
+                    item.save()
+                return self
+            else:
+                sibling_children = Item.objects.filter(category=self.parent_category)
+                if sibling_children.exists():
+                    other_cat = Category.objects.get_or_create(name="%s: Other" % self.parent_category.name, parent_category=self.parent_category)
+                return super(Category, self).save(*args, **kwargs)
+        else:
+            return super(Category, self).save(*args, **kwargs)
             
             
 class ItemManager(models.Manager):
@@ -75,13 +90,8 @@ class Item(models.Model):
     amount_left = models.PositiveIntegerField(default=1)
     category = models.ForeignKey(Category)
     
-    def checkout(self, user, amount):
-        return ItemRecord.objects.create(person=user, item=self, amount=amount)
-    
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.amount_left = self.total_amount
-        super(Item, self).save(*args, **kwargs)
+    def checkout(self, person, amount):
+        return ItemRecord.objects.create(person=person, item=self, amount=amount)
     
     def __str__(self):
         return self.name
@@ -101,19 +111,19 @@ class Item(models.Model):
         }
         return json
         
-
-class ItemRecordManager(models.Manager):
-    
-    def users_items_out(self, user):
-        return Item.objects.items_out().filter(person=user)
+    def save(self, *args, **kwargs):
+        sibling_cats = Category.objects.filter(parent_category=self.category)
+        if sibling_cats.exists():
+            self.category = Category.objects.get_or_create(name="%s: Other" % self.category.name, parent_category=self.category)[0]
+        if self.pk is None:
+            self.amount_left = self.total_amount
+        return super(Item, self).save(*args, **kwargs)
 
         
 class ItemRecord(models.Model):
     """docstring for ItemRecord"""
     
-    objects = ItemRecordManager()
-    
-    person = models.ForeignKey(User)
+    person = models.CharField(max_length=50)
     item = models.ForeignKey(Item)
     date_checked_out = models.DateTimeField(auto_now_add=True)
     date_checked_in = models.DateTimeField(null=True, blank=True)
@@ -161,7 +171,7 @@ class ItemRecord(models.Model):
             return record
             
     def __str__(self):
-        return "%s %s: %d %s" % (self.person.first_name, self.person.last_name, self.amount, self.item.name)
+        return "%s: %d %s" % (self.person, self.amount, self.item.name)
     
     def __repr__(self):
-        return "%s %s: %d %s" % (self.person.first_name, self.person.last_name, self.amount, self.item.name)
+        return "%s: %d %s" % (self.person, self.amount, self.item.name)

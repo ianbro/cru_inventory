@@ -47,12 +47,12 @@ def ajax_checkout_item(request, *args, **kwargs):
     if request.method == "POST":
         json_data = {}
         
-        user = request.user
+        person = request.POST['person']
         amount = int(request.POST['amount'])
         item_id = int(request.POST['item_id'])
         
         try:
-            item_record = Item.objects.get(id=item_id).checkout(user, amount)
+            item_record = Item.objects.get(id=item_id).checkout(person, amount)
             return HttpResponseRedirect(reverse('inv:items'))
         except ValueError:
             return HttpResponseRedirect("%s?error=true" % reverse('inv:items'))
@@ -101,7 +101,6 @@ class ItemListView(TemplateView):
     
     template_name = 'inventory/items.html'
     
-    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         # try:
         #     return super(ItemListView, self).dispatch(request, *args, **kwargs)
@@ -113,8 +112,7 @@ class ItemListView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(ItemListView, self).get_context_data(*args, **kwargs)
         
-        users_items_out = ItemRecord.objects.users_items_out(self.request.user)
-        all_items_out = Item.objects.items_out().exclude(id__in=[item.pk for item in users_items_out])
+        items_out = Item.objects.items_out()
         
         categories = Category.objects.root_categories()
         json_categories = []
@@ -124,8 +122,7 @@ class ItemListView(TemplateView):
         context.update({
             "categories_json": json.dumps(json_categories),
             "categories_python": categories,
-            "users_items_out": users_items_out,
-            "all_items_out": all_items_out,
+            "items_out": items_out,
         })
         
         if 'error' in self.request.GET.keys():

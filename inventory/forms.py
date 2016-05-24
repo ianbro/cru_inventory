@@ -5,7 +5,7 @@ from inventory.models import Item, ItemRecord, Category
 class CreateItemForm(forms.ModelForm):
     
     try:
-        categories = Category.objects.leaf_categories()
+        categories = Category.objects.all()
     except Exception, e:
         categories = []
     
