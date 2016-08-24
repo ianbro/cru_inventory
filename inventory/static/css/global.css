@@ -25,6 +25,7 @@ button{
   border-bottom-color: #9c3365;
   border-bottom-style: solid;
   border-bottom-width: 2px;
+  background: linear-gradient(#6a0032, #6a0032, #6a0032, #b30053);
 }
 
 .logo--cru{

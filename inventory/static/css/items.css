@@ -27,6 +27,7 @@
   background-color: #6a0032;
   padding: 5px 5px 5px 5px;
   cursor: pointer;
+  background: linear-gradient(#6a0032, #b30053, #6a0032);
 }
 
 .list__header.sub_category{
@@ -36,6 +37,13 @@
 .list__header > h3{
   display: inline-block;
   margin: 0;
+  color: #ffc82e;
+}
+
+.list__header > a{
+  display: inline-block;
+  text-align: right;
+  float: right;
   color: #ffc82e;
 }
 

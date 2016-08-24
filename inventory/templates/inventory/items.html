@@ -23,17 +23,17 @@
     {% for root_category in categories_python %}
         <div class="list" id="list__container--items_in">
             <div class="list__header" id="header--{{ root_category.pk }}" category-id="{{ root_category.pk }}">
-                <h3>Available: {{ root_category.name }}</h3>
+                <h3>{{ root_category.name }}</h3><a>expand</a>
                 {% if item_amount_error %}
                 <p>Sorry, not enough</p>
                 {% endif %}
             </div>
             <div class="list__content--root" id="category--{{ root_category.pk }}">
-                
+
             </div>
         </div>
     {% endfor %}
-    
+
     <div class="list" id="list__container--items_out">
       <div class="list__header header_out">
           <h3>Items Out:</h3>

@@ -3,7 +3,7 @@ $(document).ready(function(){
   $(".list__header.sub_category").each(function(){
     $(this).css("padding-left", "" + (parseInt($(this).attr("level")) * 10) + "px");
   });
-  
+
   $(".item__name").live("click", function(){
     $("div#item--" + $(this).attr("item-id")).slideToggle("fast");
   });
@@ -19,15 +19,15 @@ $(document).ready(function(){
   $(".out_element__toggle").live("click", function(){
     $("#item--" + $(this).attr("item-id")).slideToggle("fast");
   });
-  
+
   $(".checkout__form").submit(function(event){
     if ($(this).find(".item__checkout_name").val() == "") {
       event.preventDefault();
       $(this).find(".item__checkout_name").focus();
-      
+
     }
   })
-  
+
   $(".submit_checkin").live("click", function() {
     $.getJSON("/inventory/checkin/" + $(this).val() + "/", function(data){
       if (data.success == true) {
@@ -37,7 +37,7 @@ $(document).ready(function(){
       }
     });
   })
-  
+
   $(".useup_item").live("click", function() {
     $.getJSON("/inventory/useup/" + $(this).val() + "/", function(data){
       if (data.success == true) {
@@ -47,7 +47,7 @@ $(document).ready(function(){
       }
     });
   });
-  
+
   // $(".list__element > div, .list__content").hide();
 });
 
@@ -75,9 +75,9 @@ function populate_root_categories() {
 function populate_category(category) {
   var cat_container = "\
     <div class=\"list__header sub_category\" level=\"" + category.level + "\" id=\"header--" + category.pk + "\" category-id=\"" + category.pk + "\"> \n\t\
-      <h3>" + category.name + "</h3> \n\
+      <h3>" + category.name + "</h3><a>expand</a> \n\
     </div> \n\
-    <div class=\"list__content\" id=\"category--" + category.pk + "\"> \n"
+    <div class=\"list__content\" id=\"category--" + category.pk + "\" hidden> \n"
   //   console.log($("#category--" + parent_id));
   // $("#category--" + parent_id).append(cat_container);
   if ("categories" in category) {
@@ -99,7 +99,7 @@ function populate_item(item){
   var item_container = "\
     <div class=\"list__element\" id=\"item_in-" + item.pk + "\"> \n\
       <h4 class=\"item__name\" item-id=\"" + item.pk + "\">" + item.name + "</h4> \n\
-      <div id=\"item--" + item.pk + "\"> \n\
+      <div id=\"item--" + item.pk + "\" hidden> \n\
         <form class='checkout__form' method=\"post\" action=\"/inventory/checkout/\"> \n\
           " + window.csrf + " \n\
           <p class=\"item__desc\">" + item.description + "</p> \n\
