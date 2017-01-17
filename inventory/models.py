@@ -41,6 +41,7 @@ class Category(models.Model):
             "pk": self.id,
             "name": self.name,
             "level": level,
+            "type": "c",
         }
         if self.category_set.all().exists():
             cats = []
@@ -107,7 +108,8 @@ class Item(models.Model):
             "date_added": self.date_added.strftime("%D"),
             "total_amount": self.total_amount,
             "amount_left": self.amount_left,
-            "level": level
+            "level": level,
+            "type": "i",
         }
         return json
         

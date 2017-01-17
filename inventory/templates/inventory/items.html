@@ -8,55 +8,46 @@
 <link type="text/css" rel="stylesheet" href="{% static 'css/items.css' %}" />
 {% endblock %}
 
-{% block custom_javascript %}
-{{ block.super }}
-<script type="text/javascript">
-  window.root_categories = {{ categories_json | safe }};
-  window.csrf = "{% csrf_token %}";
-</script>
-<script type="text/javascript" src="{% static 'js/items.js' %}"></script>
-{% endblock custom_javascript %}
-
 {% block content %}
 
-<div class="content">
-    {% for root_category in categories_python %}
-        <div class="list" id="list__container--items_in">
-            <div class="list__header" id="header--{{ root_category.pk }}" category-id="{{ root_category.pk }}">
-                <h3>{{ root_category.name }}</h3><a>expand</a>
-                {% if item_amount_error %}
-                <p>Sorry, not enough</p>
-                {% endif %}
-            </div>
-            <div class="list__content--root" id="category--{{ root_category.pk }}">
+<div class="layout_frame" id="itemsin_navigation"></div>
 
-            </div>
-        </div>
-    {% endfor %}
-
-    <div class="list" id="list__container--items_out">
-      <div class="list__header header_out">
-          <h3>Items Out:</h3>
-      </div>
-      <div class="list__content content_out">
-          {% for record in items_out %}
-          <div class="list__element" id="item_out-{{ record.id }}">
-              <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>
-              <div class="out_element__details" id="item--out_{{ record.id }}">
-                  <div>
-                      <p class="item__desc">{{ record.item.description }}</p>
-                      <p class="record__person">Checked out by: {{ record.person }}</p>
-                      <p class="record__amount">Amount Out: {{ record.amount }}</p>
-                  </div>
-                  <div>
-                      <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
-                      <button class="useup_item" value="{{ record.id }}">Use Up</button>
-                  </div>
+<div class="list" id="list__container--items_out">
+  <div class="list__header header_out">
+      <h3>Items Out:</h3>
+  </div>
+  <div class="list__content content_out">
+      {% for record in items_out %}
+      <div class="list__element" id="item_out-{{ record.id }}">
+          <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>
+          <div class="out_element__details" id="item--out_{{ record.id }}">
+              <div>
+                  <p class="item__desc">{{ record.item.description }}</p>
+                  <p class="record__person">Checked out by: {{ record.person }}</p>
+                  <p class="record__amount">Amount Out: {{ record.amount }}</p>
+              </div>
+              <div>
+                  <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
+                  <button class="useup_item" value="{{ record.id }}">Use Up</button>
               </div>
           </div>
-          <div class="seperator"></div>
-          {% endfor %}
       </div>
-    </div>
+      <div class="seperator"></div>
+      {% endfor %}
+  </div>
 </div>
+
 {% endblock content %}
+
+{% block custom_javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'js/items.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/inventory/list_itemsin.js' %}"></script>
+<script type="text/javascript">
+  window.csrf = "{% csrf_token %}";
+  $(document).ready(function() {
+    window.rootCategoryIn = new ListItemsIn(null);
+    window.rootCategoryIn.render();
+  });
+</script>
+{% endblock custom_javascript %}

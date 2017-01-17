@@ -1,0 +1,13 @@
+<div class="list block" id="{{ html_id }}">
+    {% if category %}
+    <div class="list__header" category-id="{{ category.pk }}">
+        <h3>{{ category.name }}</h3>
+    </div>
+    {% endif %}
+    <div class="list__content">
+        <input class="search-items-in" name="search-items-in"></input>
+    </div>
+    <div class="list__content">
+        <div class="list-items-in"></div>
+    </div>
+</div>

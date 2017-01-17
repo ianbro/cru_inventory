@@ -1,13 +1,8 @@
-.content{
-  height: auto;
-  margin: auto;
-  background-color: #fafafa;
-  box-shadow: 0px 5px 6px -1px #b3b3b3;
+.body__container{
+  padding: 0 25px 0 25px;
 }
 
 .list{
-  display: inline-block;
-  vertical-align: top;
   padding: 0;
   background-color: #f2f2f2;
   width: 250px;
@@ -15,11 +10,8 @@
   border-width: 1px;
   border-style: solid;
   border-color: #050505;
-  margin: 30px;
-}
-
-.list{
   overflow-y: scroll;
+  margin-top: 25px;
 }
 
 .list__header{
@@ -30,7 +22,7 @@
   background: linear-gradient(#6a0032, #b30053, #6a0032);
 }
 
-.list__header.sub_category{
+.list__header.category__element{
   background-color: #8c2254;
 }
 

@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
+from django.template.loader import render_to_string
 
 from inventory.models import Item, ItemRecord, Category
 from inventory.forms import CreateItemForm
@@ -130,3 +132,89 @@ class ItemListView(TemplateView):
         
         return context
         
+        
+def ajax_get_items_by_category(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        cat_id = request.GET.get("cat_id", None)
+        if cat_id:
+            category = Category.objects.get(id=int(cat_id))
+            items = Item.objects.filter(category=category)
+            sub_categories = category.category_set.all()
+            return JsonResponse({
+                "items": [i.to_json() for i in items],
+                "sub_categories": [c.to_json() for c in sub_categories],
+            })
+        else:
+            root_categories = Category.objects.root_categories()
+            return JsonResponse({
+                "items": [],
+                "sub_categories": [c.to_json() for c in root_categories],
+            })
+            
+            
+def ajax_get_items_by_category_html(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        html = ""
+        
+        def element_render(type, element):
+            if type == "i":
+                template = "inventory/elements/item.html"
+                return render_to_string(template, {"item": element}, context_instance=RequestContext(request))
+            elif type == "c":
+                template = "inventory/elements/category.html"
+                return render_to_string(template, {"category": element}, context_instance=RequestContext(request))
+            elif type == "r":
+                template = "inventory/elements/record.html"
+                return render_to_string(template, {"item_record": element}, context_instance=RequestContext(request))
+            else:
+                return "Item type '%s' is not supported" % type
+        
+        ids = request.GET.get("ids", None)
+        if ids:
+            ids = [i for i in ids.split(";")]
+            
+            for id in ids:
+                cat_or_item = id.split(":")[0]
+                id = int(id.split(":")[1])
+                
+                element = None
+                if cat_or_item == "i":
+                    # It's an item
+                    element = Item.objects.get(id=id)
+                elif cat_or_item == "c":
+                    # It's a category
+                    element = Category.objects.get(id=id)
+                elif cat_or_item == "r":
+                    # It's an ItemRecord
+                    element = ItemRecord.objects.get(id=id)
+                html = html + "\n" + element_render(cat_or_item, element)    
+                
+            return HttpResponse(html)
+        else:
+            return HttpResponse("No data to show.")
+            
+        
+def ajax_get_list_html(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        cat_id = request.GET.get("cat_id", None)
+        template = "inventory/components/list_itemsin.html"
+        ci = RequestContext(request)
+        
+        if cat_id:
+            category = Category.objects.get(id=cat_id)
+            context = {
+                "html_id": category.id,
+                "category": category
+            }
+            return HttpResponse(render_to_string(template, context, context_instance=ci))
+        else:
+            context = {
+                "html_id": "root_list"
+            }
+            return HttpResponse(render_to_string(template, context, context_instance=ci))

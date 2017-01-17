@@ -9,10 +9,10 @@
         <link type="text/css" rel="stylesheet" href="{% static 'css/global.css' %}"/>
         {% endblock css %}
         
-        {% block custom_javascript %}
+        <script type="text/javascript" src="{% static 'js/fuse.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/fuzzy_search.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery-1.12.3.js' %}"></script>
         <script type="text/javascript" src="{% static 'jquery-ui-1.9.2/js/jquery-1.8.3.js' %}"></script>
-        {% endblock custom_javascript %}
     </head>
     <body>
         <div class="header__container">
@@ -31,9 +31,12 @@
                 {% endif %}
             </div>
         </div>
-        <div class="body__container">
+        <div class="body__container flex left-to-right align-baseline">
             {% block content %}
             {% endblock content %}
         </div>
+    
+      {% block custom_javascript %}
+      {% endblock custom_javascript %}
     </body>
 </html>
