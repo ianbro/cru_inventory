@@ -1,11 +1,11 @@
-<div class="list block" id="{{ html_id }}">
+<div class="list block bg-white" id="{{ html_id }}">
     {% if category %}
-    <div class="list__header" category-id="{{ category.pk }}">
-        <h3>{{ category.name }}</h3>
+    <div class="list__header bg-red padding--small no-margin" category-id="{{ category.pk }}">
+        <h3 class="txt-yellow no-padding no-margin">{{ category.name }}</h3>
     </div>
     {% endif %}
-    <div class="list__content">
-        <input class="search-items-in" name="search-items-in"></input>
+    <div class="list__content padding-sides padding-top">
+        <input class="search-items-in list_search__input" name="search-items-in"></input>
     </div>
     <div class="list__content">
         <div class="list-items-in"></div>

@@ -4,6 +4,7 @@
 
 html{
   height: 100%;
+  background-color: #f2f2f2;
 }
 
 body{
@@ -20,13 +21,53 @@ button{
 }
 
 .flex { display: flex; }
-
 .space-between { justify-content: space-between; }
 .left-to-right { justify-content: flex-start; }
+.row { flex-direction: row; }
+.column { flex-direction: column; }
+.wrap { flex-wrap: wrap; }
 .align-baseline { align-items: baseline; }
+.padding { padding: 15px; }
+.padding-sides { padding: 0 15px 0 15px; }
+.padding-vert { padding: 15px 0 15px 0; }
+.padding-left { padding-left: 15px; }
+.padding-right { padding-right: 15px; }
+.padding-top { padding-top: 15px; }
+.padding-bottom { padding-bottom: : 15px; }
+.padding--small { padding: 8px; }
+.padding-sides--small { padding: 0 8px 0 8px; }
+.padding-vert--small { padding: 8px 0 8px 0; }
+.padding-left--small { padding-left: 8px; }
+.padding-right--small { padding-right: 8px; }
+.padding-top--small { padding-top: 8px; }
+.padding-bottom--small { padding-bottom: : 8px; }
+.no-padding { padding: 0; }
+.margin { margin: 15px; }
+.margin-sides { margin: 0 15px 0 15px; }
+.margin-vert { margin: 15px 0 15px 0; }
+.margin-left { margin-left: 15px; }
+.margin-right { margin-right: 15px; }
+.margin-top { margin-top: 15px; }
+.margin-bottom { margin-bottom: : 15px; }
+.margin--small { margin: 8px; }
+.margin-sides--small { margin: 0 8px 0 8px; }
+.margin-vert--small { margin: 8px 0 8px 0; }
+.margin-left--small { margin-left: 8px; }
+.margin-right--small { margin-right: 8px; }
+.margin-top--small { margin-top: 8px; }
+.margin-bottom--small { margin-bottom: : 8px; }
+.no-margin { margin: 0; }
+.w100 { width: 100%; }
+.h100 { height: 100%; }
+.bg-red { background-color: #6a0032; }
+.bg-yellow { background-color: #ffcb2e; }
+.bg-white { background-color: #f2f2f2; }
+.txt-red { color: #6a0032; }
+.txt-yellow { color: #ffcb2e; }
+.txt-white { color: #f2f2f2; }
+.pointer { cursor: pointer; }
 
 .header__container{
-  padding: 0 40px 0 40px;
   background-color: #6a0032;
   border-bottom-color: #9c3365;
   border-bottom-style: solid;
@@ -74,7 +115,8 @@ button{
   cursor: pointer;
 }
 
-.body__container{
-  height: 100%;
-  background-color: #f2f2f2;
+.layout_frame {
+  background: none;
+  border: none;
+  margin: 25px;
 }
