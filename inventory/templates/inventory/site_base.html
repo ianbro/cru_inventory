@@ -23,17 +23,17 @@
               <div class="flex">
                   {% if user.is_authenticated %}
                   <div class="header__link pointer highlight-red padding">
-                    <a class="txt-gray no-decoration" href="{% url 'logout' %}">Logout</a>
+                    <a class="txt-red no-decoration" href="{% url 'logout' %}">Logout</a>
                   </div>
                   {% endif %}
                   
                   <div class="header__link pointer highlight-red padding">
-                    <a class="txt-gray no-decoration" href="{% url 'inv:add_item' %}">Add Item</a>
+                    <a class="txt-red no-decoration" href="{% url 'inv:add_item' %}">Add Item</a>
                   </div>
                   
                   {% if user.is_superuser %}
                   <div class="header__link pointer highlight-red padding">
-                    <a class="txt-gray no-decoration" href="/helm/">Helm</a>
+                    <a class="txt-red no-decoration" href="/helm/">Helm</a>
                   </div>
                   {% endif %}
               </div>

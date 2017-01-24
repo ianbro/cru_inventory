@@ -2,21 +2,25 @@ class ListItemsIn {
   constructor(category_id) {
     this.catClass = ".js-category";
     this.itemClass = ".js-submit_itemcheckout";
+    if (category_id != null) {
+      // Then this is the root (e.g. no parent category)
+      this.component_id = "#" + category_id;
+    } else {
+      this.component_id = "#root_list";
+    }
     
     this.render = function() {
       var component = this;
       
       var GET_data = [];
-      var list_selector = "#root_list";
       if (category_id != null) {
         // Then this is the root (e.g. no parent category)
-        list_selector = "#" + category_id;
         var GET_data = {
           cat_id: category_id
         };
       }
       
-      if ($(list_selector).length > 0) {
+      if ($(component.component_id).length > 0) {
         // This category is already open.
         return;
       }
@@ -29,7 +33,6 @@ class ListItemsIn {
         dataType: "html",
         success: function(html) {
           $("#itemsin_navigation").append(html);
-          component.component_id = list_selector;
           component.initialize();
         }
       });
@@ -57,9 +60,16 @@ class ListItemsIn {
     
     this.close = function() {
       $(this.component_id).remove();
+      var category_selector = this.component_id + " " + this.catClass;
+      var item_selector = this.component_id + " " + this.itemClass;
+      var iextras_selector = this.component_id + " " + ".js-item_toggle_extras";
+      $(document).off("click", category_selector);
+      $(document).off("click", item_selector);
+      $(document).off("click", iextras_selector);
+      
       if (this.openCategory) {
         this.openCategory.close();
-        delete this.openCategory;
+        this.openCategory = null;
       }
     }
     
@@ -80,7 +90,6 @@ class ListItemsIn {
         }
         component.initialize_fuzzy_search(data);
         component.fuzzy_search.initialize();
-        component.initialize_jquery();
       });
     }
     
@@ -92,9 +101,8 @@ class ListItemsIn {
       
       $(document).on("click", category_selector, function() {
         var new_category_id = $(this).attr("category-id");
-        var component = this;
         
-        if (component.openCategory) {
+        if (component.openCategory != null) {
           component.openCategory.close();
         }
         component.openCategory = new ListItemsIn(new_category_id);
@@ -111,6 +119,7 @@ class ListItemsIn {
         window.itemsinExtrasComponent.show(item);
       });
     }
+    this.initialize_jquery();
     
     this.initialize_fuzzy_search = function(data) {
       var build_row = function(html) {
