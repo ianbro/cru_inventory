@@ -1,0 +1,24 @@
+<div class="list__element fuzzy_search__element" id="list_items_in" item-id={{ record.id }}>
+    <p class="js-itemout js-itemout_display padding--small no-margin pointer highlight-yellow">{{ record.item.name }}</p>
+    <div class="padding-sides js-itemout_info" hidden>
+        <div class="info_container">
+            <div class="info_group">
+              <p class="info_label">DESCRIPTION:</p>
+              <p class="info_data">{{ record.item.description }}</p>
+            </div>
+            <div class="info_group">
+              <p class="info_label">CHECKED OUT BY:</p>
+              <p class="info_data">{{ record.person }}</p>
+            </div>
+            <div class="info_group">
+              <p class="info_label">AMOUNT OUT:</p>
+              <p class="info_data">{{ record.amount }}</p>
+            </div>
+        </div>
+        <div class="padding-vert">
+            <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
+            <button class="useup_item" value="{{ record.id }}">Use Up</button>
+        </div>
+    </div>
+</div>
+<div class="seperator fuzzy_search__element"></div>

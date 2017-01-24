@@ -1,15 +1,24 @@
-<div class="list__element">
-  <h4 class="item__name pointer margin--small" item-id="{{ item.pk }}">{{ item.name }}</h4>
-  <div hidden>
-    <form class='checkout__form' method="post" action="/inventory/checkout/">
-      {% csrf_token %}
-      <p class="item__desc">{{ item.description }}</p>
-      <p class="item__amount">{{ item.amount_left }} of {{ item.total_amount }} left. Take out:"
-        <input type="number" name="amount" value="1" min="1" max="{{ item.amount_left }}"></input>
-      </p>
-      <input class='item__checkout_name' type='text' name='person' placeholder='Firstname Lastname'></input>
-      <button name="item_id" type="submit" class="submit_checkout" value="{{ item.pk }}">Checkout</button>
-    </form>
+<div class="list__element fuzzy_search__element">
+  <div class="flex space-between align-baseline pointer highlight-yellow">
+    <p class="item__name no-margin padding--small js_itemin grow" item-id={{ item.pk }}>{{ item.name }}</p>
+    <p class="no-padding margin-right--small no-margin inline-block js-item_toggle_extras" item-id={{ item.pk }}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="20" width="20" viewBox="0 0 24 20">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>
+      </svg>
+    </p>
   </div>
-  <div class="seperator"></div>
+  <div class="js-item_info padding" hidden>
+    <div class="item__desc">
+      <p class="no-padding no-margin">{{ item.description }}</p>
+    </div>
+    <div class="item__amount padding-vert--small"><span class="no-margin no-padding js-itemin_amount_left__display">{{ item.amount_left }}</span> of {{ item.total_amount }} left. Take out:"
+      <input class="item__amount_input js-itemcheckout__amount" type="number" name="amount" value="1" min="1" max="{{ item.amount_left }}"></input>
+    </div>
+    <div>
+      <input class='item__checkout_name js-itemcheckout__name' type='text' name='person' placeholder='Firstname Lastname'></input>
+      <button name="item_id" type="submit" class="submit_checkout js-submit_itemcheckout" value="{{ item.pk }}">Checkout</button>
+    </div>
+  </div>
 </div>
+<div class="seperator fuzzy_search__element"></div>

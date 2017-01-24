@@ -2,7 +2,7 @@ import logging
 import json
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
@@ -55,11 +55,17 @@ def ajax_checkout_item(request, *args, **kwargs):
         
         try:
             item_record = Item.objects.get(id=item_id).checkout(person, amount)
-            return HttpResponseRedirect(reverse('inv:items'))
-        except ValueError:
-            return HttpResponseRedirect("%s?error=true" % reverse('inv:items'))
+            return JsonResponse({
+                "success": True,
+                "item_record": item_record.to_json()
+            })
+        except ValueError, e:
+            return JsonResponse({
+                "success": False,
+                "error": str(e)
+            })
     else:
-        return Http404("Please Don't Do That!")
+        return HttpResponseBadRequest("Please Don't Do That!")
     
     
 def ajax_checkin_item(request, record_id, *args, **kwargs):
@@ -163,13 +169,13 @@ def ajax_get_items_by_category_html(request, *args, **kwargs):
         def element_render(type, element):
             if type == "i":
                 template = "inventory/elements/item.html"
-                return render_to_string(template, {"item": element}, context_instance=RequestContext(request))
+                return render_to_string(template, {"item": element})
             elif type == "c":
                 template = "inventory/elements/category.html"
-                return render_to_string(template, {"category": element}, context_instance=RequestContext(request))
+                return render_to_string(template, {"category": element})
             elif type == "r":
                 template = "inventory/elements/record.html"
-                return render_to_string(template, {"item_record": element}, context_instance=RequestContext(request))
+                return render_to_string(template, {"item_record": element})
             else:
                 return "Item type '%s' is not supported" % type
         
@@ -204,7 +210,6 @@ def ajax_get_list_html(request, *args, **kwargs):
     else:
         cat_id = request.GET.get("cat_id", None)
         template = "inventory/components/list_itemsin.html"
-        ci = RequestContext(request)
         
         if cat_id:
             category = Category.objects.get(id=cat_id)
@@ -212,9 +217,61 @@ def ajax_get_list_html(request, *args, **kwargs):
                 "html_id": category.id,
                 "category": category
             }
-            return HttpResponse(render_to_string(template, context, context_instance=ci))
+            return HttpResponse(render_to_string(template, context))
         else:
             context = {
                 "html_id": "root_list"
             }
-            return HttpResponse(render_to_string(template, context, context_instance=ci))
+            return HttpResponse(render_to_string(template, context))
+            
+            
+def ajax_get_list_items_out_json(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        items_out = [i.to_json() for i in Item.objects.items_out()]
+        return JsonResponse({"data": items_out})
+            
+
+def ajax_get_list_items_out_html(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        item_ids = request.GET.get("ids", None)
+        template = "inventory/elements/item_out.html"
+        html = ""
+        ids = [i for i in item_ids.split(";")]
+        
+        for id in ids:
+            cat_or_item = id.split(":")[0]
+            id = int(id.split(":")[1])
+            
+            if cat_or_item == "r":
+                record = ItemRecord.objects.get(id=id)
+                html = html + "\n" + render_to_string(template, { "record": record })
+            else:
+                html = html + "\n" + "<!-- Unknown Type %d. It must only be type 'r'. -->" % id
+            
+        return HttpResponse(html)
+        
+
+def ajax_get_records_by_item_html(request, *args, **kwargs):
+    if request.method == "POST":
+        return HttpResponseBadRequest("Please don't do that.")
+    else:
+        item_ids = request.GET.get("ids", None)
+        template = "inventory/elements/record_for_item.html"
+        html = ""
+        ids = [i for i in item_ids.split(";")]
+        
+        for id in ids:
+            cat_or_item = id.split(":")[0]
+            id = int(id.split(":")[1])
+            
+            if cat_or_item == "r":
+                record = ItemRecord.objects.get(id=id)
+                html = html + "\n" + render_to_string(template, { "record": record })
+            else:
+                html = html + "\n" + "<!-- Unknown Type %d. It must only be type 'r'. -->" % id
+            
+        return HttpResponse(html)

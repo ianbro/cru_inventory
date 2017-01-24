@@ -2,30 +2,9 @@ $(document).ready(function(){
   $(".list__header.sub_category").each(function(){
     $(this).css("padding-left", "" + (parseInt($(this).attr("level")) * 10) + "px");
   });
-
-  $(".item__name").live("click", function(){
-    $("div#item--" + $(this).attr("item-id")).slideToggle("fast");
-  });
-  $(".list__header").live("click", function(){
-    $("div#category--" + $(this).attr("category-id")).slideToggle("fast");
-  });
-  $(".header_out").live("click", function(){
-    $(".content_out").slideToggle("fast");
-  });
   $(".header_all_out").live("click", function(){
     $(".content_all_out").slideToggle("fast");
   });
-  $(".out_element__toggle").live("click", function(){
-    $("#item--" + $(this).attr("item-id")).slideToggle("fast");
-  });
-
-  $(".checkout__form").submit(function(event){
-    if ($(this).find(".item__checkout_name").val() == "") {
-      event.preventDefault();
-      $(this).find(".item__checkout_name").focus();
-
-    }
-  })
 
   $(".submit_checkin").live("click", function() {
     $.getJSON("/inventory/checkin/" + $(this).val() + "/", function(data){
@@ -46,69 +25,65 @@ $(document).ready(function(){
       }
     });
   });
-
-  // $(".list__element > div, .list__content").hide();
 });
 
-// function populate_root_categories() {
-//   for (var i = 0; i < window.root_categories.length; i++) {
-//     var cat = window.root_categories[i];
-//     if ("categories" in cat) {
-//       var len = cat.categories.length;
-//       // for some reason, at some point, cat.categories here is undefined.
-//       for (var j = 0; j < len; j++) {
-//         var sub_cat = cat.categories[j];
-//         var sub_cats_html = populate_category(sub_cat);
-//         $("#category--" + cat.pk).append(sub_cats_html);
-//       }
-//     } else {
-//       for (var j = 0; j < cat.items.length; j++) {
-//         var item = cat.items[j];
-//         var items_html = populate_item(item);
-//         $("#category--" + cat.pk).append(items_html);
-//       }
-//     }
-//   }
-// }
-// 
-// function populate_category(category) {
-//   var cat_container = "\
-//     <div class=\"list__header sub_category\" level=\"" + category.level + "\" id=\"header--" + category.pk + "\" category-id=\"" + category.pk + "\"> \n\t\
-//       <h3>" + category.name + "</h3><a>expand</a> \n\
-//     </div> \n\
-//     <div class=\"list__content\" id=\"category--" + category.pk + "\" hidden> \n"
-//   //   console.log($("#category--" + parent_id));
-//   // $("#category--" + parent_id).append(cat_container);
-//   if ("categories" in category) {
-//     for (var i = 0; i < category.categories.length; i++) {
-//       var cat = category.categories[i];
-//       cat_container = cat_container + populate_category(cat);
-//     }
-//   } else {
-//     for (var i = 0; i < category.items.length; i++) {
-//       item = category.items[i];
-//       cat_container = cat_container + populate_item(item);
-//     }
-//   }
-//   cat_container = cat_container + "\n</div> <!-- " + category.name + " and " + category.pk + " -->\n"
-//   return cat_container
-// }
-// 
-// function populate_item(item){
-//   var item_container = "\
-//     <div class=\"list__element\" id=\"item_in-" + item.pk + "\"> \n\
-//       <h4 class=\"item__name\" item-id=\"" + item.pk + "\">" + item.name + "</h4> \n\
-//       <div id=\"item--" + item.pk + "\" hidden> \n\
-//         <form class='checkout__form' method=\"post\" action=\"/inventory/checkout/\"> \n\
-//           " + window.csrf + " \n\
-//           <p class=\"item__desc\">" + item.description + "</p> \n\
-//           <p class=\"item__amount\">" + item.amount_left + " of " + item.total_amount + " left. Take out: \n\
-//             <input type=\"number\" name=\"amount\" id=\"" + item.id + "--amount\" value=\"1\" min=\"1\" max=\"" + item.amount_left + "\"></input> \n\
-//           </p> \n\
-//           <input class='item__checkout_name' type='text' id='id_person--" + item.id + "' name='person' placeholder='Firstname Lastname'></input>\
-//           <button name=\"item_id\" type=\"submit\" class=\"submit_checkout\" value=\"" + item.pk + "\">Checkout</button> \n\
-//         </form> \n\
-//       </div> \n\
-//     </div>\n"
-//   return item_container;
-// }
+class ItemsInExtrasComponent {
+  constructor() {
+    this.item = null;
+    this.show = function(item) {
+      $(".js-itemin_name").html(item.name);
+      $(".js-itemin_description").html(item.description);
+      $(".js-itemin_total_amount").html(item.total_amount);
+      $(".js-itemin_amount_left").html(item.amount_left);
+      $(".js-itemin_category").html(item.category__name);
+      $(".js-itemin_date_added").html(item.date_added);
+      
+      this.populate_fuzzy_search(item.records);
+      
+      $("#itemsin_extras_container").slideDown("fast");
+      this.item = item;
+    }
+    
+    this.hide = function() {
+      $("#itemsin_extras_container").slideUp("fast");
+      
+      $(".js-itemin_name").html("NONE");
+      $(".js-itemin_description").html("NONE");
+      $(".js-itemin_total_amount").html("NONE");
+      $(".js-itemin_amount_left").html("NONE");
+      $(".js-itemin_category").html("NONE");
+      $(".js-itemin_date_added").html("NONE");
+      $("#search_records_per_item").val("");
+      this.populate_fuzzy_search([]);
+      $("#itemin_records_list").html();
+      this.item = null;
+    }
+    
+    this.populate_fuzzy_search = function(records) {
+      this.record_search.data = records;
+      this.record_search.refresh();
+    }
+    
+    this.initialize_fuzzy_search = function() {
+      var build_row = function(html) {
+        $(this.listId).append(html);
+      };
+      var keys = ['person'];
+      var search_id = "search_records_per_item";
+      var list_id = "itemin_records_list";
+      var mass_build = "/inventory/ajax_get_records_by_item_html";
+      
+      this.record_search = new FuzzySearch([], keys, search_id, list_id, build_row, null, mass_build);
+      this.record_search.initialize();
+    }
+    this.initialize_fuzzy_search();
+    
+    this.initialize_jquery = function() {
+      var component = this;
+      $(document).on("click", "#close_itemin_extras", function() {
+        component.hide();
+      });
+    }
+    this.initialize_jquery();
+  }
+}

@@ -9,7 +9,10 @@ from inventory.views import (
     ajax_useup_item,
     ajax_get_items_by_category_html,
     ajax_get_items_by_category,
-    ajax_get_list_html)
+    ajax_get_list_html,
+    ajax_get_list_items_out_json,
+    ajax_get_list_items_out_html,
+    ajax_get_records_by_item_html)
 
 urlpatterns = [
     url(r'^checkin/(?P<record_id>\d+)/', ajax_checkin_item, name='checkin'),
@@ -20,4 +23,7 @@ urlpatterns = [
     url(r'^ajax_get_items_by_category/', ajax_get_items_by_category, name="ajax_get_items_by_category"),
     url(r'^ajax_get_items_by_category_html/', ajax_get_items_by_category_html, name="ajax_get_items_by_category_html"),
     url(r'^ajax_get_list_html/', ajax_get_list_html, name="ajax_get_list_html"),
+    url(r'^ajax_get_list_items_out_json', ajax_get_list_items_out_json, name="ajax_get_list_items_out_json"),
+    url(r'^ajax_get_list_items_out_html', ajax_get_list_items_out_html, name="ajax_get_list_items_out_html"),
+    url(r'^ajax_get_records_by_item_html/', ajax_get_records_by_item_html, name="ajax_get_records_by_item_html"),
 ]

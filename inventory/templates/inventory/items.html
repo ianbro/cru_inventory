@@ -8,34 +8,79 @@
 <link type="text/css" rel="stylesheet" href="{% static 'css/items.css' %}" />
 {% endblock %}
 
+{% block nav_right %}
+<div class="header__link pointer highlight-red padding" id="show_items_out">
+  <p class="txt-gray no-margin no-padding">Items Out</p>
+</div>
+{% endblock %}
+
 {% block content %}
+{% csrf_token %}
 
 <div class="layout_frame flex row left-to-right wrap" id="itemsin_navigation"></div>
 
-<div class="list" id="list__container--items_out">
-  <div class="list__header header_out">
-      <h3>Items Out:</h3>
-  </div>
-  <div class="list__content content_out">
-      {% for record in items_out %}
-      <div class="list__element" id="item_out-{{ record.id }}">
-          <h4 class="out_element__toggle" item-id="out_{{ record.id }}">{{ record.item.name }}</h4>
-          <div class="out_element__details" id="item--out_{{ record.id }}">
-              <div>
-                  <p class="item__desc">{{ record.item.description }}</p>
-                  <p class="record__person">Checked out by: {{ record.person }}</p>
-                  <p class="record__amount">Amount Out: {{ record.amount }}</p>
-              </div>
-              <div>
-                  <button class="submit_checkin" value="{{ record.id }}">Checkin</button>
-                  <button class="useup_item" value="{{ record.id }}">Use Up</button>
-              </div>
-          </div>
+  <div class="absolute h100 container_extras js-extras" id="items_out_container" hidden>
+    <div class="flex no-margin h100 column left-to-right bg-white border-left border-gray">
+      
+      <div class="w100" id="list__container--items_out">
+        <div class="list__header bg-red padding--small no-margin">
+            <h3 class="txt-yellow--light no-padding no-margin">Items Out:</h3>
+        </div>
+        <div class="list__controls padding shadow">
+            <input id="search-items-out" class="list_search__input" name="search-items-out" placeholder="Search an item or category."></input>
+        </div>
+        <div id="list-items-out">
+        </div>
       </div>
-      <div class="seperator"></div>
-      {% endfor %}
+      
+    </div>
   </div>
-</div>
+  
+  <div class="absolute h100 container_extras js-extras" id="itemsin_extras_container" hidden>
+    <div class="flex no-margin h100 column left-to-right bg-white border-left border-gray">
+      
+      <div class="w100">
+        <div class="list__header bg-red padding--small no-margin flex space-between middle">
+          <h3 class="txt-yellow--light no-padding no-margin inline-block">Item Info and Actions</h3>
+          <p class="inline-block no-margin margin-right--small btn-close txt-white" id="close_itemin_extras">
+            &times;
+          </p>
+        </div>
+        <div class="list__controls padding shadow">
+          <p class="info_label js-itemin_name no-margin">ITEM_NAME</p>
+        </div>
+        <div class="padding-sides padding-bottom">
+          <div class="info_group">
+            <p class="info_label">DESCRIPTION:</p>
+            <p class="info_data js-itemin_description">COB</p>
+          </div>
+          <div class="info_group">
+            <p class="info_label">TOTAL AMOUNT:</p>
+            <p class="info_data js-itemin_total_amount">COB</p>
+          </div>
+          <div class="info_group">
+            <p class="info_label">AMOUNT LEFT:</p>
+            <p class="info_data js-itemin_amount_left">COB</p>
+          </div>
+          <div class="info_group">
+            <p class="info_label">CATEGORY:</p>
+            <p class="info_data js-itemin_category">COB</p>
+          </div>
+          <div class="info_group">
+            <p class="info_label">DATE ADDED:</p>
+            <p class="info_data js-itemin_date_added">COB</p>
+          </div>
+          <div class="info_group">
+            <p class="info_label">CHECKED OUT TO:</p>
+            <input id="search_records_per_item" class="list_search__input" placeholder="Search a person."></input>
+            <div id="itemin_records_list">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 
 {% endblock content %}
 
@@ -43,11 +88,15 @@
 {{ block.super }}
 <script type="text/javascript" src="{% static 'js/items.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/inventory/list_itemsin.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/inventory/list_itemsout.js' %}"></script>
 <script type="text/javascript">
-  window.csrf = "{% csrf_token %}";
   $(document).ready(function() {
+    window.csrf = $("input[name='csrfmiddlewaretoken']").val();
     window.rootCategoryIn = new ListItemsIn(null);
     window.rootCategoryIn.render();
+    window.itemsOutList = new ListItemsOut();
+    window.itemsOutList.initialize();
+    window.itemsinExtrasComponent = new ItemsInExtrasComponent();
   });
 </script>
 {% endblock custom_javascript %}

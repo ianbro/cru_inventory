@@ -110,7 +110,17 @@ class Item(models.Model):
             "amount_left": self.amount_left,
             "level": level,
             "type": "i",
+            "category__name": self.category.name,
+            "records": [{
+                "person": r.person,
+                "date_checked_out": r.date_checked_out.strftime("%D"),
+                "amount": r.amount,
+                "type": "r",
+                "id": r.id,
+                "pk": r.pk,
+            } for r in Item.objects.items_out().filter(item=self)]
         }
+        
         return json
         
     def save(self, *args, **kwargs):
@@ -131,6 +141,28 @@ class ItemRecord(models.Model):
     date_checked_in = models.DateTimeField(null=True, blank=True)
     amount = models.PositiveIntegerField(default=1)
     used_up = models.NullBooleanField()
+    
+    def to_json(self):
+        if self.date_checked_in:
+            dci = self.date_checked_in.strftime("%D")
+        else:
+            dci = "Not yet."
+        if self.date_checked_out:
+            dco = self.date_checked_out.strftime("%D")
+        else:
+            dco = "Not yet."
+        return {
+            "person": self.person,
+            "item": self.item.to_json(),
+            "item.name": self.item.name,
+            "date_checked_in": dci,
+            "date_checked_out": dco,
+            "amount": self.amount,
+            "used_up": self.used_up,
+            "type": "r",
+            "id": self.id,
+            "pk": self.pk,
+        }
     
     def use_up_item(self):
         item = Item.objects.get(id=self.item.id)
